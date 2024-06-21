@@ -4,7 +4,7 @@
 - [Andrei Rech | 23102140](https://github.com/AndreiRech)  
 - [Mariah Backes Freire | 23102560](https://github.com/mariahbf)
 
-Este projeto implementa um gerenciador de memória personalizado em C, permitindo a alocação, liberação e gerenciamento de blocos de memória dentro de um pool pré-alocado. O gerenciador suporta diferentes estratégias de alocação, incluindo Primeiro Ajuste (First Fit), Melhor Ajuste (Best Fit) e Pior Ajuste (Worst Fit).
+Este projeto implementa um gerenciador de memória personalizado em C, permitindo a alocação, liberação e gerenciamento de blocos de memória dentro de um pool pré-alocado.No momento, o gerenciador suporta apenas uma estratégia de alocação, sendo o Primeiro Ajuste (First Fit).
 
 ## Funcionalidades
 
