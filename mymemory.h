@@ -3,7 +3,7 @@
 //definicao da lista encadeada de alocacoes 
 typedef struct allocation{
     void *start;
-    size_t *size;
+    size_t size;
     struct allocation *next; // referencia para a proxima alocacao
 } allocation_t;
 

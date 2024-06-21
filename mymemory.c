@@ -24,45 +24,98 @@ mymemory_t *mymemory_init(size_t size){
 
 
 
-
+//implementacao com First Fit (procura um espaço disponivel antes de alocar outro espaço na memoria)
 void *mymemory_alloc(mymemory_t *m, size_t size){
     allocation_t *current = m->head;
     allocation_t *prev = NULL;
 
     while (current != NULL) {
-        if (current->size >= size) {
-            void *start = current->start;
-            if (prev == NULL) {
-                m->head = current->next;
-            } else {
-                prev->next = current->next;
-            }
-            free(current);
-            return start;
+        //verificacao para First Fit
+        if (current->size >= size && current->start != NULL) {
+            void *allocated_m = current-> start;
+            current->start = NULL;
+            return allocated_m;
         }
         prev = current;
-        current = current->next;
+        current = current->next;    //vai para o proximo
     }
+
+    //O seguinte metodo foi feito usando IA
+    //se um espaço livre nao for encontrado, alocamos mais memoria no final do pool
+    //verificacao se o pool eh maior que a alocacao + o que ja foi alocado
+    if(m-> total_size >= size + sizeof(allocation_t)){
+        allocation_t *new_alloc = (allocation_t *)((char *)m->pool + (m->total_size - size - sizeof(allocation_t)));
+        new_alloc->start = (void *)((char *)new_alloc + sizeof(allocation_t));
+        new_alloc->size = size;
+        new_alloc->next = m->head;
+        m->head = new_alloc;
+        m->total_size -= size + sizeof(allocation_t);
+        return new_alloc->start;
+    }
+    return NULL;
 }
 
 
-// Libera uma alocação específica
+// Libera uma alocacao de memoria especifica
 void mymemory_free(mymemory_t *m, void *ptr) {
-    // Implemente a lógica para encontrar e liberar a alocação específica dentro do seu pool
+    allocation_t *current = m-> head;
+
+    while (current != NULL){
+        //se o start for o ponteiro da memoria que quermos liberar
+        if(current->start == ptr){
+            current->start = NULL;
+            return;
+        }
+        current = current->next;    //vai para o proximo
+    }
+    
 }
 
-// Exibe as alocações atuais do pool
+//alocacoes atuais do pool
 void mymemory_display(mymemory_t *m) {
     allocation_t *current = m->head;
     while (current != NULL) {
-        printf("Alocação em %p, tamanho %zu\n", current, *(current->size));
+        //'zu' especificador para size_t
+        printf("Allocation: %p\n size: %zu\n", current, current->size);  
         current = current->next;
     }
 }
 
-// Exibe estatísticas gerais do pool
+//status do pool
 void mymemory_stats(mymemory_t *m) {
-    // Implemente a lógica para calcular e exibir estatísticas, como espaço total, espaço alocado, espaço livre, etc.
+    //inicializamos total_free como tamanho do pool para ser decrementado
+    size_t total_free = m->total_size;  
+    size_t largest_free = 0;
+    size_t total_alloc = 0;
+    size_t num_allocs = 0;
+    size_t num_frag = 0;
+    allocation_t *current = m-> head;
+
+    while (current != NULL) {
+        if (current->start != NULL) {
+            total_alloc += current->size;
+            num_allocs++;
+        } 
+        else{
+            total_free -= current->size;
+            num_frag++;
+
+            //atualiza o maior espaco de fragmentacao
+            if(current->size > largest_free){
+                largest_free = current->size;
+            }
+        }
+        current = current->next;
+    }
+
+
+
+    printf("Number of allocations: %zu\n", num_allocs);
+    printf("Amount of allocated memory: %zu bytes\n", total_alloc);
+    printf("Amout of free memory: %zu bytes\n", total_free);
+    printf("Largest free memory block: %zu bytes\n", largest_free);
+    printf("Number of fragmentations: %zu\n", num_frag);
+        
 }
 
 // Libera todas as alocações de memória, incluindo o pool
