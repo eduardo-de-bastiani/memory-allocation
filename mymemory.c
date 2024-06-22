@@ -31,11 +31,13 @@ void *mymemory_alloc(mymemory_t *m, size_t size){
 
     while (current != NULL) {
         //verificacao para First Fit
-        if (current->size >= size && current->start != NULL) {
-            void *allocated_m = current-> start;
-            current->start = NULL;
-            return allocated_m;
+        if (current->start == NULL && current->size >= size) {
+            // Aloca o bloco depois da estrutura de controle
+            current->start = (void *)(current + 1); 
+            //m->total_size += size;
+            return current->start;
         }
+
         prev = current;
         current = current->next;    //vai para o proximo
     }
@@ -75,17 +77,19 @@ void mymemory_free(mymemory_t *m, void *ptr) {
 void mymemory_display(mymemory_t *m) {
     allocation_t *current = m->head;
     while (current != NULL) {
+        if(current->start != NULL){
         //'zu' especificador para size_t
         printf("Allocation: %p\n size: %zu\n", current, current->size);  
+        }
         current = current->next;
     }
 }
 
 //status do pool
 void mymemory_stats(mymemory_t *m) {
-    //inicializamos total_free como tamanho do pool para ser decrementado
-    size_t total_free = m->total_size;  
-    size_t largest_free = 0;
+    //inicializamos total_free e largest_free como tamanho do pool para ser decrementado/substituido
+    size_t total_free = m->total_size; 
+    size_t largest_free = m->total_size;
     size_t total_alloc = 0;
     size_t num_allocs = 0;
     size_t num_frag = 0;
@@ -97,7 +101,7 @@ void mymemory_stats(mymemory_t *m) {
             num_allocs++;
         } 
         else{
-            total_free -= current->size;
+            total_free += current->size;
             num_frag++;
 
             //atualiza o maior espaco de fragmentacao
@@ -111,7 +115,7 @@ void mymemory_stats(mymemory_t *m) {
 
 
     printf("Number of allocations: %zu\n", num_allocs);
-    printf("Amount of allocated memory: %zu bytes\n", total_alloc);
+    printf("Total of allocated memory: %zu bytes\n", total_alloc);
     printf("Amout of free memory: %zu bytes\n", total_free);
     printf("Largest free memory block: %zu bytes\n", largest_free);
     printf("Number of fragmentations: %zu\n", num_frag);
