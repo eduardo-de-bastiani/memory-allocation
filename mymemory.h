@@ -8,7 +8,7 @@ typedef struct allocation{
 } allocation_t;
 
 typedef struct{
-    void *pool;         //bloco de memoria total (ponteiro aponta para seu inicio)
+    void *pool;         // bloco de memoria total (ponteiro aponta para seu inicio)
     size_t total_size;  // tamanho total do bloco de memoria
     allocation_t *head; // posicao atual da memoria
 } mymemory_t;

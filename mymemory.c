@@ -32,9 +32,15 @@ void *mymemory_alloc(mymemory_t *m, size_t size){
     while (current != NULL) {
         //verificacao para First Fit
         if (current->start == NULL && current->size >= size) {
-            // Aloca o bloco depois da estrutura de controle
+            //(void*) Converte para ponteiro generico // Aloca o bloco depois da estrutura de controle
             current->start = (void *)(current + 1); 
-            //m->total_size += size;
+
+            //m->total_free -= size;
+            
+            
+            //tenho que colocar algum código aqui que faça: espaço total do bloco(200) - espaco ocupado do bloco(50) e some com o total_free(x + 150). Tem que pegar o resultado da subtracao(150) e subtrair do total_alloc(y - 150) PODE NÃO SER EXATAMENTE AQUI
+            // não sei se o problema está na alocação de fato ou no stats
+
             return current->start;
         }
 
@@ -98,11 +104,19 @@ void mymemory_stats(mymemory_t *m) {
     while (current != NULL) {
         if (current->start != NULL) {
             total_alloc += current->size;
+            
             num_allocs++;
         } 
         else{
+
             total_free += current->size;
+
+            
+            //tenho que colocar algum código aqui que faça: espaço total do bloco(200) - espaco ocupado do bloco(50) e some com o total_free(x + 150). Tem que pegar o resultado da subtracao(150) e subtrair do total_alloc(y - 150)
+
             num_frag++;
+
+
 
             //atualiza o maior espaco de fragmentacao
             if(current->size > largest_free){

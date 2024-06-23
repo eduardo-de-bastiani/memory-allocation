@@ -34,5 +34,7 @@ int main(){
     mymemory_stats(m);
     printf("\n");
     mymemory_display(m);
+
+    //o total_free deve mostrar 3254 bytes
     
 }
