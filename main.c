@@ -36,5 +36,10 @@ int main(){
     mymemory_display(m);
 
     //o total_free deve mostrar 3254 bytes
+
+    printf("\n---[Cleaning up the memory]---\n");
+    mymemory_cleanup(m);
+    mymemory_stats(m);
+    mymemory_display(m);
     
 }

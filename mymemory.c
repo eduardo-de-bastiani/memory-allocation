@@ -35,8 +35,16 @@ void *mymemory_alloc(mymemory_t *m, size_t size){
             //(void*) Converte para ponteiro generico // Aloca o bloco depois da estrutura de controle
             current->start = (void *)(current + 1); 
 
-            //m->total_free -= size;
             
+            //verificacao se a nova alocacao nao cobre todo o espaco
+            if(current->size > size + sizeof(allocation_t)){
+                allocation_t *new_alloc = (allocation_t *)((char *)current + sizeof(allocation_t) + size);
+                new_alloc->start = NULL;
+                new_alloc->size = current->size - size - sizeof(allocation_t);
+                new_alloc->next = current->next;
+                current->size = size;
+                current->next = new_alloc;
+            }
             
             //tenho que colocar algum código aqui que faça: espaço total do bloco(200) - espaco ocupado do bloco(50) e some com o total_free(x + 150). Tem que pegar o resultado da subtracao(150) e subtrair do total_alloc(y - 150) PODE NÃO SER EXATAMENTE AQUI
             // não sei se o problema está na alocação de fato ou no stats
@@ -81,6 +89,12 @@ void mymemory_free(mymemory_t *m, void *ptr) {
 
 //alocacoes atuais do pool
 void mymemory_display(mymemory_t *m) {
+
+    printf("\n## Memory Display ##\n");
+
+    if(m->pool == NULL){
+        printf("Memory pool is empty.\n");
+    }
     allocation_t *current = m->head;
     while (current != NULL) {
         if(current->start != NULL){
@@ -101,19 +115,22 @@ void mymemory_stats(mymemory_t *m) {
     size_t num_frag = 0;
     allocation_t *current = m-> head;
 
+    printf("\n## Memory Status ##\n");
+
+    if(m->pool == NULL){
+        printf("Memory pool is empty.\n");
+        return;
+    }
+
     while (current != NULL) {
         if (current->start != NULL) {
+
             total_alloc += current->size;
-            
             num_allocs++;
         } 
         else{
 
             total_free += current->size;
-
-            
-            //tenho que colocar algum código aqui que faça: espaço total do bloco(200) - espaco ocupado do bloco(50) e some com o total_free(x + 150). Tem que pegar o resultado da subtracao(150) e subtrair do total_alloc(y - 150)
-
             num_frag++;
 
 
@@ -136,11 +153,15 @@ void mymemory_stats(mymemory_t *m) {
         
 }
 
-// Libera todas as alocações de memória, incluindo o pool
+
 void mymemory_cleanup(mymemory_t *m) {
-    // Libere todas as alocações individuais, se necessário, e então libere o pool de memória
+    // Libera a memoria do pool e a memoria do gerenciamento das estruturas
     free(m->pool);
     free(m);
+
+    m->pool = NULL;
+    m->head = NULL;
+    m->total_size = 0;
 }
 
 
