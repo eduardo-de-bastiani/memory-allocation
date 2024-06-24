@@ -46,8 +46,6 @@ void *mymemory_alloc(mymemory_t *m, size_t size){
                 current->next = new_alloc;
             }
             
-            //tenho que colocar algum código aqui que faça: espaço total do bloco(200) - espaco ocupado do bloco(50) e some com o total_free(x + 150). Tem que pegar o resultado da subtracao(150) e subtrair do total_alloc(y - 150) PODE NÃO SER EXATAMENTE AQUI
-            // não sei se o problema está na alocação de fato ou no stats
 
             return current->start;
         }
