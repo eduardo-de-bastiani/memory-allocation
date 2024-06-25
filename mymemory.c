@@ -8,6 +8,7 @@ mymemory_t *mymemory_init(size_t size){
     if (m == NULL){
         return NULL;
     }
+
     // '->' acesso de atributo de um objeto
     // neste caso, acessamos o pool e inicializamos ele
     m-> pool = malloc(size);
@@ -22,8 +23,6 @@ mymemory_t *mymemory_init(size_t size){
     return m;
 }
 
-
-
 //implementacao com First Fit (procura um espaço disponivel antes de alocar outro espaço na memoria)
 void *mymemory_alloc(mymemory_t *m, size_t size){
     allocation_t *current = m->head;
@@ -34,7 +33,6 @@ void *mymemory_alloc(mymemory_t *m, size_t size){
         if (current->start == NULL && current->size >= size) {
             //(void*) Converte para ponteiro generico // Aloca o bloco depois da estrutura de controle
             current->start = (void *)(current + 1); 
-
             
             //verificacao se a nova alocacao nao cobre todo o espaco
             if(current->size > size + sizeof(allocation_t)){
@@ -46,7 +44,6 @@ void *mymemory_alloc(mymemory_t *m, size_t size){
                 current->next = new_alloc;
             }
             
-
             return current->start;
         }
 
@@ -54,7 +51,7 @@ void *mymemory_alloc(mymemory_t *m, size_t size){
         current = current->next;    //vai para o proximo
     }
 
-    //O seguinte metodo foi feito usando IA
+    //O seguinte trecho foi feito usando IA
     //se um espaço livre nao for encontrado, alocamos mais memoria no final do pool
     //verificacao se o pool eh maior que a alocacao + o que ja foi alocado
     if(m-> total_size >= size + sizeof(allocation_t)){
@@ -69,7 +66,6 @@ void *mymemory_alloc(mymemory_t *m, size_t size){
     return NULL;
 }
 
-
 // Libera uma alocacao de memoria especifica
 void mymemory_free(mymemory_t *m, void *ptr) {
     allocation_t *current = m-> head;
@@ -82,17 +78,16 @@ void mymemory_free(mymemory_t *m, void *ptr) {
         }
         current = current->next;    //vai para o proximo
     }
-    
 }
 
 //alocacoes atuais do pool
 void mymemory_display(mymemory_t *m) {
-
     printf("\n## Memory Display ##\n");
 
     if(m->pool == NULL){
         printf("Memory pool is empty.\n");
     }
+
     allocation_t *current = m->head;
     while (current != NULL) {
         if(current->start != NULL){
@@ -122,16 +117,12 @@ void mymemory_stats(mymemory_t *m) {
 
     while (current != NULL) {
         if (current->start != NULL) {
-
             total_alloc += current->size;
             num_allocs++;
         } 
         else{
-
             total_free += current->size;
             num_frag++;
-
-
 
             //atualiza o maior espaco de fragmentacao
             if(current->size > largest_free){
@@ -141,14 +132,11 @@ void mymemory_stats(mymemory_t *m) {
         current = current->next;
     }
 
-
-
     printf("Number of allocations: %zu\n", num_allocs);
     printf("Total of allocated memory: %zu bytes\n", total_alloc);
     printf("Amout of free memory: %zu bytes\n", total_free);
     printf("Largest free memory block: %zu bytes\n", largest_free);
-    printf("Number of fragmentations: %zu\n", num_frag);
-        
+    printf("Number of fragmentations: %zu\n", num_frag);   
 }
 
 
@@ -161,5 +149,3 @@ void mymemory_cleanup(mymemory_t *m) {
     m->head = NULL;
     m->total_size = 0;
 }
-
-

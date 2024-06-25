@@ -2,7 +2,6 @@
 #include "mymemory.h"
 
 int main(){
-
     // 24 bytes de cada alocacao estão sendo usados para estruturas de controle 
 
     mymemory_t *m = mymemory_init(sizeof(int) * 1000);
@@ -41,5 +40,4 @@ int main(){
     mymemory_cleanup(m);
     mymemory_stats(m);
     mymemory_display(m);
-    
 }

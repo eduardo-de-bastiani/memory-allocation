@@ -30,5 +30,3 @@ void mymemory_stats(mymemory_t *m);
 
 //libera todas as alocacoes de memoria, incluindo o pool (fica inutilizavel até inicializar um novo pool)
 void mymemory_cleanup(mymemory_t *m);
-
-
