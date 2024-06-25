@@ -35,7 +35,18 @@ Este projeto implementa um gerenciador de memória personalizado em C, permitind
 
 ### Compilação
 
-Para compilar o projeto, execute o seguinte comando no terminal:
+Para compilar o projeto, execute os seguintes comandos no terminal:
 
 ```sh
-gcc -o exec mymemory.c main.c
+make
+```
+
+```sh
+./exec
+```
+
+Caso deseja limpar os arquivos após a execução apenas utilize o comando no terminal:
+
+```sh
+make clean
+```
