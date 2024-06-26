@@ -1,4 +1,6 @@
 #include <stdio.h>
+#ifndef MYMEMORY_H
+#define MYMEMORY_H
 
 //definicao da lista encadeada de alocacoes 
 typedef struct allocation{
@@ -30,3 +32,5 @@ void mymemory_stats(mymemory_t *m);
 
 //libera todas as alocacoes de memoria, incluindo o pool (fica inutilizavel até inicializar um novo pool)
 void mymemory_cleanup(mymemory_t *m);
+
+#endif
