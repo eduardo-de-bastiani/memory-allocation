@@ -42,7 +42,7 @@ make
 ```
 
 ```sh
-./exec
+LD_LIBRARY_PATH=. ./exec
 ```
 
 Caso deseja limpar os arquivos após a execução apenas utilize o comando no terminal:
