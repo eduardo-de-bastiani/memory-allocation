@@ -10,7 +10,7 @@ LDFLAGS = -shared
 all: $(EXEC)
 
 $(EXEC): $(MAIN) $(LIB_NAME)
-	$(CC) $(MAIN) -o $(EXEC) -L. -lmymemory
+	$(CC) $(MAIN) -o $(EXEC) -L. -lmymemory -Wl,-rpath,.
 
 $(LIB_NAME): $(LIB_OBJ)
 	$(CC) $(LDFLAGS) -o $(LIB_NAME) $(LIB_OBJ)
