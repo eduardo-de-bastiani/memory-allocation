@@ -17,8 +17,15 @@ mymemory_t *mymemory_init(size_t size){
         return NULL;
     }
 
-    m -> total_size = size;
-    m -> head = NULL;
+    // cria uma alocação inicial vazia apenas para o first fit funcionar
+    allocation_t *initial_alloc = malloc(sizeof(allocation_t));
+    if (initial_alloc == NULL){
+        free(m->pool);
+        free(m);
+        return NULL;
+    }
+    initial_alloc->size = size;
+    m->head = initial_alloc;
 
     return m;
 }
@@ -38,7 +45,7 @@ void *mymemory_alloc(mymemory_t *m, size_t size){
             if(current->size > size + sizeof(allocation_t)){
                 allocation_t *new_alloc = (allocation_t *)((char *)current + sizeof(allocation_t) + size);
                 new_alloc->start = NULL;
-                new_alloc->size = current->size - size - sizeof(allocation_t);
+                new_alloc->size = current->size - size;
                 new_alloc->next = current->next;
                 current->size = size;
                 current->next = new_alloc;
@@ -50,19 +57,7 @@ void *mymemory_alloc(mymemory_t *m, size_t size){
         prev = current;
         current = current->next;    //vai para o proximo
     }
-
-    //O seguinte trecho foi feito usando IA
-    //se um espaço livre nao for encontrado, alocamos mais memoria no final do pool
-    //verificacao se o pool eh maior que a alocacao + o que ja foi alocado
-    if(m-> total_size >= size + sizeof(allocation_t)){
-        allocation_t *new_alloc = (allocation_t *)((char *)m->pool + (m->total_size - size - sizeof(allocation_t)));
-        new_alloc->start = (void *)((char *)new_alloc + sizeof(allocation_t));
-        new_alloc->size = size;
-        new_alloc->next = m->head;
-        m->head = new_alloc;
-        m->total_size -= size + sizeof(allocation_t);
-        return new_alloc->start;
-    }
+    
     return NULL;
 }
 
