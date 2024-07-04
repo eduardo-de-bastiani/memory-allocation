@@ -25,6 +25,8 @@ mymemory_t *mymemory_init(size_t size){
         return NULL;
     }
     initial_alloc->size = size;
+    initial_alloc->start = NULL;
+    initial_alloc->next = NULL;
     m->head = initial_alloc;
 
     return m;
@@ -131,7 +133,7 @@ void mymemory_stats(mymemory_t *m) {
     printf("Total of allocated memory: %zu bytes\n", total_alloc);
     printf("Amout of free memory: %zu bytes\n", total_free);
     printf("Largest free memory block: %zu bytes\n", largest_free);
-    printf("Number of fragmentations: %zu\n", num_frag);   
+    printf("Number of fragmentations: %zu\n", num_frag-1);   
 }
 
 
